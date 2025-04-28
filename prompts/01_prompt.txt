@@ -1,0 +1,3 @@
+Create a contract for donating Dapp with this requirements:
+
+- The application must have a feature to donate me
