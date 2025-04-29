@@ -44,7 +44,8 @@ contract DonateMe is StateAndModifier {
     }
 
     // note: ada ada masalah dengan payment transactnya
-    function donate(PaymentTier _tier, string memory _message) public payable {
+    function donate(uint8 _tierRaw, string memory _message) public payable {
+        require(_tierRaw <= uint8(PaymentTier.Caviar), "Tier Choses not found");
         require(msg.sender != owner, "Owner can`t donate hismself");
         require(msg.value > 0, "Donation amount must be greater than 0");
 
@@ -52,7 +53,11 @@ contract DonateMe is StateAndModifier {
         uint amount;
         bool success;
 
+        // cast _tier to ENUM PaymentTier
+        PaymentTier _tier = PaymentTier(_tierRaw);
+
         // check if tier donate is same with criteria
+
         if (_tier == PaymentTier.Coffe) {
             amount = 0.0002 ether; // 10k
             require(msg.value >= amount, "Insufficient donation for tier");
@@ -68,8 +73,6 @@ contract DonateMe is StateAndModifier {
             require(msg.value >= amount, "Insufficient donation for tier");
             payable(owner).transfer(amount);
             success = true;
-        } else {
-            revert("Tier Choses not found");
         }
 
         // check if error send eth to owner
